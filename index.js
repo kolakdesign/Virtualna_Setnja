@@ -29,6 +29,8 @@
   var sceneListToggleElement = document.querySelector('#sceneListToggle');
   var autorotateToggleElement = document.querySelector('#autorotateToggle');
   var fullscreenToggleElement = document.querySelector('#fullscreenToggle');
+  var deviceOrientationToggleElement = document.querySelector('#deviceOrientationToggle');
+  var deviceOrientationControlMethod = new DeviceOrientationControlMethod();
 
   // Detect desktop or mobile mode.
   if (window.matchMedia) {
@@ -178,7 +180,16 @@
   controls.registerMethod('inElement',    new Marzipano.ElementPressControlMethod(viewInElement,  'zoom', -velocity, friction), true);
   controls.registerMethod('outElement',   new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom',  velocity, friction), true);
 
-  function sanitize(s) {
+  // Register the custom control method.
+  controls.registerMethod('deviceOrientation', deviceOrientationControlMethod);
+
+  if (data.settings.deviceOrientationEnabled) {
+      deviceOrientationToggleElement.classList.add('enabled');
+      enable();
+  }
+  deviceOrientationToggleElement.addEventListener('click', toggleDeviceOrientation);
+
+    function sanitize(s) {
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
   }
 
@@ -220,6 +231,54 @@
     sceneListElement.classList.toggle('enabled');
     sceneListToggleElement.classList.toggle('enabled');
   }
+
+  function requestPermissionForIOS() {
+
+    window.DeviceOrientationEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    enableDeviceOrientation();
+                }
+            }).catch((e) => {
+        console.error(e);
+    });
+}
+
+function enableDeviceOrientation() {
+    deviceOrientationControlMethod.getPitch(function (err, pitch) {
+        if (!err) {
+            activeScene.view.setPitch(pitch);
+        }
+    });
+    controls.enableMethod('deviceOrientation');
+}
+
+function enable() {
+    if (!deviceOrientationToggleElement.classList.contains('enabled')) {
+        return;
+    }
+    if (window.DeviceOrientationEvent) {
+        if (typeof (window.DeviceOrientationEvent.requestPermission) === 'function') {
+            requestPermissionForIOS();
+        } else {
+            enableDeviceOrientation();
+        }
+    }
+}
+
+function disable() {
+    controls.disableMethod('deviceOrientation');
+}
+
+function toggleDeviceOrientation() {
+    if (deviceOrientationToggleElement.classList.contains('enabled')) {
+        deviceOrientationToggleElement.classList.remove('enabled');
+        disable();
+    } else {
+        deviceOrientationToggleElement.classList.add('enabled');
+        enable();
+    }
+}
 
   function startAutorotate() {
     if (!autorotateToggleElement.classList.contains('enabled')) {
