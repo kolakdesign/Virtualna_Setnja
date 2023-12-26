@@ -35,6 +35,7 @@ var APP_DATA = {
   "name": "Project Title",
   "settings": {
     "mouseViewMode": "drag",
+    "deviceOrientationEnabled": false,
     "autorotateEnabled": false,
     "fullscreenButton": false,
     "viewControlButtons": false

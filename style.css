@@ -828,3 +828,60 @@ body.view-control-buttons .viewControlButton {
 .viewControlButton-6 {
   margin-left: 105px;
 }
+
+
+#deviceOrientationToggle {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 40px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  background-color: rgb(30,142,46);
+  background-color: rgba(30,142,46,0.8);
+}
+
+.mobile #deviceOrientationToggle {
+  width: 50px;
+  height: 50px;
+  right: 50px;
+}
+
+/* If there is a fullscreen button, autorotate must placed a bit to the left */
+body.fullscreen-enabled #deviceOrientationToggle {
+  right: 80px;
+}
+
+body.fullscreen-enabled.mobile #deviceOrientationToggle {
+  right: 100px;
+}
+
+#deviceOrientationToggle .icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+}
+
+.mobile #deviceOrientationToggle .icon {
+  top: 10px;
+  right: 10px;
+}
+
+#deviceOrientationToggle .icon.on {
+  display: none;
+}
+
+#deviceOrientationToggle .icon.off {
+  display: block;
+}
+
+#deviceOrientationToggle.enabled .icon.on {
+  display: block;
+}
+
+#deviceOrientationToggle.enabled .icon.off {
+  display: none;
+}
